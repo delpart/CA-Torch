@@ -47,13 +47,13 @@ n_batches = 4
 
 model = CA().to(device)
 orig_state = np.zeros((1, 16, 100, 100))
-orig_state[:, :, 100//2, 100//2] = 1.0
+orig_state[:, 3:, 100//2, 100//2] = 1.0
 plt.imshow(orig_state[0, :3, :, :].transpose((1,2,0)))
 plt.savefig('seed.png')
 plt.close()
 orig_state = torch.from_numpy(orig_state).float().to(device)
 
-optim = torch.optim.Adam(model.parameters(), lr=0.002)
+optim = torch.optim.Adam(model.parameters(), lr=1e-5)
 
 img_np = Image.open('shiba.png').resize((100, 100))
 img_np = np.array(img_np)/255.
@@ -75,8 +75,8 @@ for epoch in range(n_epochs):
     for _ in range(np.random.randint(64, 96)):
         state = model(state)
 
-    worst_idx = torch.argmax(torch.mean(torch.nn.functional.mse_loss(state[:, :3, :, :], img[:, :3, :, :], reduction='none'), dim=(1,2,3)))
-    loss = torch.nn.functional.mse_loss(state[:, :3, :, :], img[:, :3, :, :]) #+ torch.nn.functional.l1_loss(state[:, :3, :, :], torch.zeros_like(state[:, :3, :, :]))
+    worst_idx = torch.argmax(torch.mean(torch.nn.functional.mse_loss(state[:, :4, :, :], img[:, :4, :, :], reduction='none'), dim=(1,2,3)))
+    loss = torch.nn.functional.mse_loss(state[:, :4, :, :], img[:, :4, :, :]) #+ torch.nn.functional.l1_loss(state[:, :3, :, :], torch.zeros_like(state[:, :3, :, :]))
 
     loss.backward()
     for p in model.parameters():
