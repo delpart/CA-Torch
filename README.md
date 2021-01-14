@@ -1,6 +1,8 @@
 # CA-Torch
 (Partial) Implementation of [Growing Neural Cellular Automata](https://distill.pub/2020/growing-ca/).
 
+<img src="ca_shiba.png" width="128" height="128">
+
 ## Usage
 ```
 python3 main.py --help
